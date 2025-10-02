@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Dabur Ayurvedic Healthcare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-green: #006837;
+            --secondary-green: #4caf50;
+            --light-green: #e8f5e9;
+            --dark-green: #004d26;
+            --white: #ffffff;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #333333;
+            --text-gray: #666666;
+            --error-red: #e74c3c;
+            --success-green: #27ae60;
+            --warning-orange: #f39c12;
+        }
+
+        body {
+            background-color: var(--white);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header */
+        .cart-header {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+            color: var(--white);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: var(--white);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--white);
+            margin-left: 10px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--light-green);
+        }
+
+        .breadcrumb a {
+            color: var(--light-green);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .continue-shopping {
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .continue-shopping:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Main Content */
+        .cart-main {
+            padding: 40px 0;
+            min-height: 60vh;
+        }
+
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        /* Cart Items Section */
+        .cart-items-section {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-green);
+        }
+
+        .section-header h1 {
+            color: var(--primary-green);
+            font-size: 28px;
+        }
+
+        .item-count {
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        /* Empty Cart */
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-gray);
+        }
+
+        .empty-cart i {
+            font-size: 80px;
+            color: var(--medium-gray);
+            margin-bottom: 20px;
+        }
+
+        .empty-cart h3 {
+            color: var(--dark-gray);
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .empty-cart p {
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        /* Cart Items */
+        .cart-item {
+            display: grid;
+            grid-template-columns: 100px 1fr auto auto;
+            gap: 20px;
+            align-items: center;
+            padding: 20px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .cart-item:hover {
+            border-color: var(--primary-green);
+            box-shadow: 0 2px 8px rgba(0, 104, 55, 0.1);
+        }
+
+        .item-image {
+            width: 100px;
+            height: 100px;
+            background: var(--light-green);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .item-image i {
+            font-size: 40px;
+            color: var(--primary-green);
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 5px;
+        }
+
+        .item-category {
+            color: var(--text-gray);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .item-price {
+            font-weight: 600;
+            color: var(--primary-green);
+            font-size: 16px;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            border: 1px solid var(--medium-gray);
+            background: var(--white);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .quantity-btn:hover {
+            background: var(--light-green);
+            border-color: var(--primary-green);
+        }
+
+        .quantity-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .quantity-input {
+            width: 60px;
+            height: 35px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .item-total {
+            font-weight: 700;
+            color: var(--dark-green);
+            font-size: 18px;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .remove-item {
+            background: none;
+            border: none;
+            color: var(--error-red);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .remove-item:hover {
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        /* Cart Actions */
+        .cart-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            position: sticky;
+            top: 20px;
+        }
+
+        .summary-header {
+            color: var(--primary-green);
+            font-size: 24px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-green);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px 0;
+        }
+
+        .summary-label {
+            color: var(--text-gray);
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .discount-row {
+            color: var(--success-green);
+        }
+
+        .total-row {
+            border-top: 2px solid var(--medium-gray);
+            padding-top: 15px;
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .total-value {
+            color: var(--primary-green);
+            font-size: 20px;
+        }
+
+        /* Promo Code */
+        .promo-code {
+            margin: 25px 0;
+            padding: 20px;
+            background: var(--light-gray);
+            border-radius: 8px;
+        }
+
+        .promo-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .promo-header i {
+            color: var(--primary-green);
+        }
+
+        .promo-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .promo-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .promo-input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-green);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-green);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--primary-green);
+            border: 2px solid var(--primary-green);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-green);
+        }
+
+        .btn-large {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--white);
+            color: var(--dark-gray);
+            padding: 15px 25px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left-color: var(--success-green);
+        }
+
+        .notification.error {
+            border-left-color: var(--error-red);
+        }
+
+        .notification.warning {
+            border-left-color: var(--warning-orange);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .cart-layout {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .order-summary {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .cart-item {
+                grid-template-columns: 80px 1fr;
+                gap: 15px;
+            }
+
+            .quantity-controls, .item-total, .remove-item {
+                grid-column: 1 / -1;
+                justify-self: start;
+            }
+
+            .cart-actions {
+                flex-direction: column;
+            }
+
+            .promo-input-group {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cart-items-section, .order-summary {
+                padding: 20px 15px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="cart-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html" class="logo-link">
+                        <i class="fas fa-leaf fa-2x"></i>
+                        <div class="logo-text">DABUR</div>
+                    </a>
+                </div>
+                <nav class="breadcrumb">
+                    <a href="index.html">Home</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>Shopping Cart</span>
+                </nav>
+                <a href="products.html" class="continue-shopping">
+                    <i class="fas fa-arrow-left"></i>
+                    Continue Shopping
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="cart-main">
+        <div class="container">
+            <div class="cart-layout">
+                <!-- Cart Items Section -->
+                <section class="cart-items-section">
+                    <div class="section-header">
+                        <h1>Shopping Cart</h1>
+                        <span class="item-count" id="itemCount">0 items</span>
+                    </div>
+
+                    <div class="cart-items" id="cartItems">
+                        <!-- Cart items will be dynamically inserted here -->
+                        <div class="empty-cart" id="emptyCart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <h3>Your cart is empty</h3>
+                            <p>Add some amazing Ayurvedic products to get started!</p>
+                            <a href="products.html" class="btn btn-primary">Shop Now</a>
+                        </div>
+                    </div>
+
+                    <!-- Cart Actions -->
+                    <div class="cart-actions" id="cartActions" style="display: none;">
+                        <button class="btn btn-secondary" id="updateCart">
+                            <i class="fas fa-sync-alt"></i>
+                            Update Cart
+                        </button>
+                        <button class="btn btn-secondary" id="clearCart">
+                            <i class="fas fa-trash"></i>
+                            Clear Cart
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Order Summary -->
+                <section class="order-summary">
+                    <h2 class="summary-header">Order Summary</h2>
+                    
+                    <div class="summary-details">
+                        <div class="summary-row">
+                            <span class="summary-label">Subtotal</span>
+                            <span class="summary-value" id="subtotal">₹0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Shipping</span>
+                            <span class="summary-value" id="shipping">₹0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Tax</span>
+                            <span class="summary-value" id="tax">₹0</span>
+                        </div>
+                        <div class="summary-row discount-row" id="discountRow" style="display: none;">
+                            <span class="summary-label">Discount</span>
+                            <span class="summary-value" id="discount">-₹0</span>
+                        </div>
+                        <div class="summary-row total-row">
+                            <span class="summary-label">Total</span>
+                            <span class="summary-value total-value" id="total">₹0</span>
+                        </div>
+                    </div>
+
+                    <!-- Promo Code -->
+                    <div class="promo-code">
+                        <div class="promo-header">
+                            <i class="fas fa-tag"></i>
+                            <span>Have a promo code?</span>
+                        </div>
+                        <div class="promo-input-group">
+                            <input type="text" class="promo-input" id="promoCode" placeholder="Enter promo code">
+                            <button class="btn btn-secondary" id="applyPromo">Apply</button>
+                        </div>
+                    </div>
+
+                    <!-- Checkout Button -->
+                    <button class="btn btn-primary btn-large" id="checkoutBtn" disabled>
+                        <i class="fas fa-lock"></i>
+                        Proceed to Checkout
+                    </button>
+
+                    <!-- Security Message -->
+                    <div style="text-align: center; margin-top: 15px; color: var(--text-gray); font-size: 14px;">
+                        <i class="fas fa-shield-alt"></i>
+                        Secure checkout · SSL encrypted
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Cart Data Structure
+        let cart = JSON.parse(localStorage.getItem('daburCart')) || [];
+        let appliedPromo = localStorage.getItem('appliedPromo') || null;
+        let discountAmount = 0;
+
+        // Promo Codes
+        const promoCodes = {
+            'WELCOME10': { discount: 10, type: 'percentage', minAmount: 500 },
+            'AYURVEDA15': { discount: 15, type: 'percentage', minAmount: 1000 },
+            'HEALTH50': { discount: 50, type: 'fixed', minAmount: 0 },
+            'DABUR25': { discount: 25, type: 'percentage', minAmount: 750 }
+        };
+
+        // DOM Elements
+        const cartItems = document.getElementById('cartItems');
+        const emptyCart = document.getElementById('emptyCart');
+        const cartActions = document.getElementById('cartActions');
+        const itemCount = document.getElementById('itemCount');
+        const subtotal = document.getElementById('subtotal');
+        const shipping = document.getElementById('shipping');
+        const tax = document.getElementById('tax');
+        const discountRow = document.getElementById('discountRow');
+        const discount = document.getElementById('discount');
+        const total = document.getElementById('total');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const updateCartBtn = document.getElementById('updateCart');
+        const clearCartBtn = document.getElementById('clearCart');
+        const promoCodeInput = document.getElementById('promoCode');
+        const applyPromoBtn = document.getElementById('applyPromo');
+        const notification = document.getElementById('notification');
+
+        // Sample Products Data
+        const products = {
+            'honey': {
+                name: 'Dabur Honey',
+                category: 'Health Care',
+                price: 220,
+                image: 'fas fa-bottle-water'
+            },
+            'paste': {
+                name: 'Dabur Red Paste',
+                category: 'Personal Care',
+                price: 85,
+                image: 'fas fa-pump-soap'
+            },
+            'oil': {
+                name: 'Dabur Amla Hair Oil',
+                category: 'Personal Care',
+                price: 180,
+                image: 'fas fa-oil-can'
+            },
+            'chyawanprash': {
+                name: 'Dabur Chyawanprash',
+                category: 'Health Care',
+                price: 320,
+                image: 'fas fa-capsules'
+            },
+            'juice': {
+                name: 'Dabur Amla Juice',
+                category: 'Food & Beverages',
+                price: 150,
+                image: 'fas fa-wine-bottle'
+            },
+            'facewash': {
+                name: 'Dabur Gulabari Face Wash',
+                category: 'Personal Care',
+                price: 95,
+                image: 'fas fa-pump-soap'
+            }
+        };
+
+        // Initialize Cart
+        function initCart() {
+            renderCart();
+            updateSummary();
+            setupEventListeners();
+            
+            // Load applied promo if exists
+            if (appliedPromo) {
+                promoCodeInput.value = appliedPromo;
+                applyPromoCode(appliedPromo);
+            }
+        }
+
+        // Render Cart Items
+        function renderCart() {
+            if (cart.length === 0) {
+                emptyCart.style.display = 'block';
+                cartActions.style.display = 'none';
+                cartItems.innerHTML = '';
+                cartItems.appendChild(emptyCart);
+                return;
+            }
+
+            emptyCart.style.display = 'none';
+            cartActions.style.display = 'flex';
+
+            cartItems.innerHTML = cart.map(item => `
+                <div class="cart-item" data-id="${item.id}">
+                    <div class="item-image">
+                        <i class="${products[item.id].image}"></i>
+                    </div>
+                    <div class="item-details">
+                        <div class="item-name">${products[item.id].name}</div>
+                        <div class="item-category">${products[item.id].category}</div>
+                        <div class="item-price">₹${products[item.id].price}</div>
+                    </div>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="updateQuantity('${item.id}', -1)" ${item.quantity <= 1 ? 'disabled' : ''}>
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="10" 
+                               onchange="setQuantity('${item.id}', this.value)">
+                        <button class="quantity-btn" onclick="updateQuantity('${item.id}', 1)" ${item.quantity >= 10 ? 'disabled' : ''}>
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <div class="item-total">₹${(products[item.id].price * item.quantity).toFixed(2)}</div>
+                    <button class="remove-item" onclick="removeFromCart('${item.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Update Quantity
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity < 1) item.quantity = 1;
+                if (item.quantity > 10) item.quantity = 10;
+                saveCart();
+                renderCart();
+                updateSummary();
+                showNotification('Cart updated successfully', 'success');
+            }
+        }
+
+        // Set Quantity
+        function setQuantity(productId, quantity) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                quantity = parseInt(quantity);
+                if (quantity < 1) quantity = 1;
+                if (quantity > 10) quantity = 10;
+                item.quantity = quantity;
+                saveCart();
+                renderCart();
+                updateSummary();
+                showNotification('Cart updated successfully', 'success');
+            }
+        }
+
+        // Remove from Cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            saveCart();
+            renderCart();
+            updateSummary();
+            showNotification('Item removed from cart', 'warning');
+        }
+
+        // Update Order Summary
+        function updateSummary() {
+            const itemCountValue = cart.reduce((total, item) => total + item.quantity, 0);
+            const subtotalValue = cart.reduce((total, item) => total + (products[item.id].price * item.quantity), 0);
+            const shippingValue = subtotalValue > 0 ? (subtotalValue >= 500 ? 0 : 40) : 0;
+            const taxValue = subtotalValue * 0.18; // 18% GST
+
+            // Calculate discount
+            let finalDiscount = 0;
+            if (appliedPromo && promoCodes[appliedPromo]) {
+                const promo = promoCodes[appliedPromo];
+                if (subtotalValue >= promo.minAmount) {
+                    if (promo.type === 'percentage') {
+                        finalDiscount = subtotalValue * (promo.discount / 100);
+                    } else {
+                        finalDiscount = promo.discount;
+                    }
+                }
+            }
+
+            const totalValue = subtotalValue + shippingValue + taxValue - finalDiscount;
+
+            // Update DOM
+            itemCount.textContent = `${itemCountValue} ${itemCountValue === 1 ? 'item' : 'items'}`;
+            subtotal.textContent = `₹${subtotalValue.toFixed(2)}`;
+            shipping.textContent = shippingValue === 0 ? 'FREE' : `₹${shippingValue.toFixed(2)}`;
+            tax.textContent = `₹${taxValue.toFixed(2)}`;
+            
+            if (finalDiscount > 0) {
+                discountRow.style.display = 'flex';
+                discount.textContent = `-₹${finalDiscount.toFixed(2)}`;
+            } else {
+                discountRow.style.display = 'none';
+            }
+            
+            total.textContent = `₹${totalValue.toFixed(2)}`;
+
+            // Enable/disable checkout button
+            checkoutBtn.disabled = cart.length === 0;
+        }
+
+        // Apply Promo Code
+        function applyPromoCode(code) {
+            code = code.toUpperCase();
+            
+            if (!promoCodes[code]) {
+                showNotification('Invalid promo code', 'error');
+                return false;
+            }
+
+            const promo = promoCodes[code];
+            const subtotalValue = cart.reduce((total, item) => total + (products[item.id].price * item.quantity), 0);
+
+            if (subtotalValue < promo.minAmount) {
+                showNotification(`Minimum order value of ₹${promo.minAmount} required for this promo`, 'error');
+                return false;
+            }
+
+            appliedPromo = code;
+            localStorage.setItem('appliedPromo', code);
+            showNotification(`Promo code applied! ${promo.discount}% discount`, 'success');
+            updateSummary();
+            return true;
+        }
+
+        // Clear Cart
+        function clearCart() {
+            if (cart.length === 0) return;
+            
+            if (confirm('Are you sure you want to clear your cart?')) {
+                cart = [];
+                appliedPromo = null;
+                localStorage.removeItem('daburCart');
+                localStorage.removeItem('appliedPromo');
+                renderCart();
+                updateSummary();
+                promoCodeInput.value = '';
+                showNotification('Cart cleared successfully', 'warning');
+            }
+        }
+
+        // Save Cart to LocalStorage
+        function saveCart() {
+            localStorage.setItem('daburCart', JSON.stringify(cart));
+        }
+
+        // Show Notification
+        function showNotification(message, type = 'success') {
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            updateCartBtn.addEventListener('click', () => {
+                showNotification('Cart updated successfully', 'success');
+            });
+
+            clearCartBtn.addEventListener('click', clearCart);
+
+            applyPromoBtn.addEventListener('click', () => {
+                const code = promoCodeInput.value.trim();
+                if (code) {
+                    applyPromoCode(code);
+                } else {
+                    showNotification('Please enter a promo code', 'error');
+                }
+            });
+
+            promoCodeInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    applyPromoBtn.click();
+                }
+            });
+
+            checkoutBtn.addEventListener('click', () => {
+                if (cart.length === 0) return;
+                showNotification('Redirecting to checkout...', 'success');
+                // In real app: window.location.href = 'checkout.html';
+                setTimeout(() => {
+                    alert('Checkout functionality would be implemented here!');
+                }, 1000);
+            });
+        }
+
+        // Demo: Add some items to cart if empty
+        function addDemoItems() {
+            if (cart.length === 0) {
+                cart = [
+                    { id: 'honey', quantity: 2 },
+                    { id: 'paste', quantity: 1 },
+                    { id: 'oil', quantity: 1 }
+                ];
+                saveCart();
+                renderCart();
+                updateSummary();
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            addDemoItems();
+            initCart();
+        });
+    </script>
+</body>
+</html>
